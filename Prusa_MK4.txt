@@ -1,0 +1,115 @@
+# Reference: supplied PrusaSlicer MK4 binary G-code file
+# PrusaSlicer 2.9.6, PLA, 0.4 mm nozzle. MK4 and XL source references were decoded from .bgcode.
+# Header starts at the first executable progress command; binary container metadata, thumbnails,
+# slicer configuration dump, and source-specific time estimates are omitted.
+# The footer keeps the reference shutdown commands. Retraction is adapted to the generated body.
+# Header format: MK4 firmware/g-code/input-shaper checks, relative E, 170 C probing then 230 C purge,
+# G29 mesh probing, purge line, pressure advance and chamber control.
+# Footer format: object end, Z lift and XY park, heaters/fan off, pressure-advance/input-shaper reset, motors off.
+# Coordinates match the original cube placement; this template is specific to this printer/profile.
+
+[settings]
+model = MK4
+x_min = 120
+y_min = 100
+first_layer_nozzle_c = 230
+later_nozzle_c = 220
+initial_retracted_mm = 0
+fan_after_layer_1 = 128
+fan_after_layer_2 = 255
+fan_after_layer_3 = 255
+travel_feed_mm_min = 18000
+cube_mm = 10
+layer_height_mm = 0.2
+nozzle_diameter_mm = 0.4
+filament_diameter_mm = 1.75
+bed_c = 60
+extrusion_width_mm = 0.4
+filament_area_scale = 1.0
+
+[header]
+M73 P0 R0
+M73 Q0 S0
+M201 X4000 Y4000 Z200 E2500
+M203 X300 Y300 Z40 E100
+M204 P4000 R2500 T4000
+M205 X8.00 Y8.00 Z2.00 E10.00
+M205 J0.010
+M205 S0 T0
+M486 S0
+M486 Acube_10mm.stl
+M486 S-1
+;TYPE:Custom
+M17
+M862.1 P0.4 A0 F0
+M862.3 P "MK4"
+M862.5 P2
+M862.6 P"Input shaper"
+M115 U6.5.7+12836
+M555 X120 Y96 W32 H14
+G90
+M83
+M140 S60
+M104 T0 S170
+M109 T0 R170
+M84 E
+G28
+G1 X42 Y-4 Z5 F4800
+M302 S155
+G1 E-2 F2400
+M84 E
+G29 P9 X10 Y-4 W32 H4
+M106 S100
+G0 Z40 F10000
+M190 S60
+M107
+; MBL
+M84 E
+G29 P1
+G29 P1 X0 Y0 W50 H20 C
+G29 P3.2
+G29 P3.13
+G29 A
+; prepare for purge
+M104 S230
+G0 X0 Y-4 Z15 F4800
+M109 S230
+G92 E0
+M569 S0 E
+; Extrude purge line
+G92 E0
+G1 E2 F2400
+G0 E7 X15 Z0.2 F500
+G0 X25 E4 F500
+G0 X35 E4 F650
+G0 X45 E4 F800
+G0 X48 Z0.05 F8000
+G0 X51 Z0.2 F8000
+G92 E0
+M221 S100
+G21
+G90
+M83
+M572 S0.036
+M142 S36
+M107
+
+[footer]
+M486 S-1
+G1 E-0.8 F2100 ; retract before shutdown
+M107
+;TYPE:Custom
+; Filament-specific end gcode
+G1 Z11 F720
+M104 S0
+M140 S0
+M107
+G1 X241 Y170 F3600
+G1 Z33 F300
+G4
+M572 S0
+M593 X T2 F0
+M593 Y T2 F0
+M84 X Y E
+M73 P100 R0
+M73 Q100 S0
